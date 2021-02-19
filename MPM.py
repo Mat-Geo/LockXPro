@@ -356,14 +356,17 @@ def forgot_pass():
 def queries():
     print("""If you encounter any issue(s) related to the working of the program 
 or if you have any queries please don't hesitate to contact our help desk via email.
-Please send an email stating the issue or query in detail and our team will get back to you soon.
+Please send an email or contact us through github.com stating the issue or query in detail and our team will get back to you soon.
 """)
     print()
-    print("Contact: mypersonalpass21@gmail.com")
+    print("""Contact Us: 
+email: mypersonalpass21@gmail.com")
+github: https://github.com/Soul-Breaker/My-Pass-Manager
+""")
     print("Thank-you")
 
-program_initiate = new_or_login()
 
+program_initiate = new_or_login()
 
 query_or_issue = input(""" If everything went perfectly and if you are satified with our performance please enter 'y'
 OR
@@ -373,3 +376,4 @@ if query_or_issue.lower().startswith('y'):
     print("It was our pleasure serving you 😇😇😇!")
 elif query_or_issue.lower().startswith('q'):
     queries()
+
