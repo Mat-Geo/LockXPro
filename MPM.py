@@ -25,16 +25,13 @@ Let's start then...
 """)
 
 
-#Email registration
+# Email registration
 regmail = input("Enter your email which will be used for verification(please enter a google mail id) :")
 intro()
 
-
-def connect_db():
-    global cursor
-    mysql_pass = input("Enter your mysql password :")
-    db = mysql.connector.connect(host='localhost', user='root', passwd=mysql_pass)
-    cursor = db.cursor()
+mysql_pass = input("Enter your mysql password :")
+db = mysql.connector.connect(host='localhost', user='root', passwd=mysql_pass)
+cursor = db.cursor()
 
 
 def new_or_login():
@@ -43,9 +40,10 @@ def new_or_login():
 2. Returning User
 Enter choice
 """)
-    if input("(1/2):").startswith('1'):
+    ch = input("(1/2):")
+    if ch.startswith('1'):
         new_user()
-    elif input("(1/2):").startswith('2'):
+    elif ch.startswith('2'):
         existing_user()
     else:
         print("Invalid input!")
@@ -54,7 +52,6 @@ Enter choice
 
 
 def new_user():
-    intro()
     mast_pass()
 
 
@@ -88,9 +85,12 @@ def new_connection():
 2. Use existing database
 """)
     if input("(1/2)").startswith('1'):
-        new_db = input("Enter the name of the database you want to create :")
-        cursor.execute('create', new_db)
-        cursor.execute('use', new_db)
+        db_name = input("Enter the name of the new database :")
+        create_db = "create database " + db_name
+        db_use = "use " + db_name
+        cursor.execute(create_db)
+        cursor.execute(db_use)
+        print("Database changed.")
         table()
     else:
         cursor.execute("show databases")
@@ -135,6 +135,11 @@ What do you want to do :
                     print("""An email has been sent to your registered mail id.
 Please follow the instructions mentioned in the mail inorder to rest your password.""")
                     forgot_pass()
+            else:
+                print("You ran out of attempts!")
+                print("An email has been sent to your registered mail to reset your password.")
+                forgot_pass()
+
 
 def verified():
     print("""
@@ -155,13 +160,15 @@ How do you want to retrieve the data :
         if action.startswith('1'):
             url_in = input("Enter the URL :")
             cursor.execute(db_use)
-            cursor.execute("select * from", table_name, "WHERE URL=", url_in)
+            display = "select * from " + table_name + " WHERE URL=" + url_in
+            cursor.execute(display)
             for x in cursor:
                 print(x)
         elif action.startswith('2'):
             web_name = input("Enter the website name(in small letters) :")
             cursor.execute(db_use)
-            cursor.execute("select * from", table_name, "WHERE Website=", web_name)
+            display = "select * from " + table_name + " WHERE Website=" + web_name
+            cursor.execute(display)
             for y in cursor:
                 print('URL ---->', y[0])
                 print('Website ---->', y[1])
@@ -170,6 +177,7 @@ How do you want to retrieve the data :
                 print('Password ---->', password)
         elif action.startswith('3'):
             print("Bye Bye...")
+            print("See you soon...")
         else:
             print("Wrong choice!")
             print("Lets try this again...")
@@ -177,9 +185,10 @@ How do you want to retrieve the data :
             verified()
         ch = input("Do you want to look up info for another site?")
         if ch.lower().startswith('y'):
-            existing_user()
+            verified()
         elif ch.lower().startswith('n'):
             print("Thank-you")
+            print("See you next time!")
         else:
             print("Invalid choice!")
             print("Try again...")
@@ -188,13 +197,14 @@ How do you want to retrieve the data :
 
 def table():
     global table_name
-    global sec_pwd
     table_name = input("Enter a name for the table :")
-    cursor.execute("create table", table_name,"(URL varchar(122),Website varchar(30),UserName varchar(14),Password varchar(201) PRIMARY KEY)")
+    creating_table = "create table " + table_name + " (URL varchar(104),Website varchar(32),UserName varchar(14),Password varchar(203) )"
+    cursor.execute(creating_table)
     inserting_values()
 
 
 def password_req():
+    global sec_pass
     print("""
 Minimum Requirements for strong password:
 i) 15 characters
@@ -208,7 +218,8 @@ v) Space not accepted as a character
 1. Enter password
 2. Generate password
 """)
-    if input('(1/2):').startswith('1'):
+    pass_choice = input("(1/2):")
+    if pass_choice.startswith('1'):
         test_pass = input("Enter the password you want to use :")
         pass_len = len(test_pass)
         count_char = count_num = count_spec = count_upper = 0
@@ -258,7 +269,7 @@ Let's start from password once more...
                 time.sleep(5)
                 password_req()
 
-    elif input('(1/2):').startswith('2'):
+    elif pass_choice.startswith('2'):
         gen_pass = password_generator()
         return gen_pass
 
@@ -270,22 +281,29 @@ Let's start from password once more...
 
 
 def inserting_values():
+    global encrypted_pwd
     url = input("Enter the URL of the website(if you want to skip this enter 'skip') :")
     website = input("Enter the name of the website(in small letters) :")
     user_name = input("Enter the user name to be used of the account :")
     acc_pwd = password_req()
-    encrypted_pwd = str(passwd_encryption(acc_pwd))
-    cursor.execute("INSERT INTO TABLE testrun1 VALUES(", url, ',', website, ',', user_name, ',', encrypted_pwd, ")")
+    encrypted_pwd = passwd_encryption(acc_pwd)
+    # print(encrypted_pwd)
+    store_pwd = encrypted_pwd
+    insert_values = "INSERT INTO " + table_name + " (URL, Website, UserName, Password) " + "VALUES (" + "'" + url + "'" + ", " + "'" + website + "'" + ", " + "'" + user_name + "'" + ", " + "'" + encrypted_pwd + "'" + ")"
+    cursor.execute(insert_values)
+    db.commit()
     print("Data has been successfully added to the database!")
 
 
 def passwd_encryption(sec_passwd):
     global encryption
+    global encrypt_str_pass
     global encrypted_pass
     key = Fernet.generate_key()
-    encryption = Fernet(key)
-    encrypted_pass = encryption.encrypt(sec_passwd.encode())
-    return encrypted_pass
+    encrypto = Fernet(key)
+    encrypted_pass = encrypto.encrypt(sec_passwd.encode())
+    encrypt_str_pass = str(encrypted_pass, 'utf8')
+    return encrypt_str_pass
 
 
 def hashing(pw):
@@ -295,85 +313,3 @@ def hashing(pw):
 def decrypt(web_name1):
     decrypted_pass = encryption.decrypt(encrypted_pass)
     return str(decrypted_pass, 'utf8')
-
-
-def otp_send():
-    global OTP
-    otp = []
-    for i in range(4):
-        code = str(random.randint(0, 9))
-        otp.append(code)
-    OTP = ''.join(otp)
-    OTP_message = "Your OTP is :" + OTP
-    sender_mail = "mypersonalpass21@gmail.com"
-    with smtplib.SMTP("smtp.gmail.com", 587)as smtp:
-        smtp.ehlo()
-        smtp.starttls()
-        smtp.ehlo()
-        smtp.login(sender_mail, "qtcnkevaipsostkp")
-        smtp.sendmail(sender_mail, regmail, "Your OTP is :", OTP_message)
-
-
-def otp_verify():
-    otp_check = input("Enter OTP {____} :")
-    if otp_check == OTP:
-        print("Verified!")
-        return True
-    else:
-        print("Restart the program and try again!!")
-        print("Quiting Program...")
-        sys.exit()
-
-def password_generator():
-    lo_alphas ="abcdefghijklmnopqrstuvwxyz"
-    up_alphas = lo_alphas.upper()
-    alphas = lo_alphas+up_alphas
-    nums = "0123456789"
-    symbs = "!@#$%^&*~?+"
-    L1=L2=L3=[]
-
-    for i in range(11):
-        a=random.choice(alphas)
-        L1.append(a)
-    for j in range(2):
-        b=random.choice(nums)
-        L2.append(b)
-    for k in range(2):
-        c=random.choice(symbs)
-        L3.append(c)
-    rand_pass=L1+L2+L3
-    random.shuffle(rand_pass)
-    return rand_pass
-
-
-def forgot_pass():
-    print()
-    otp_send()
-    print("An email has been sent to",regmail," with an OTP!")
-    otp_verify()
-    mast_pass()
-
-def queries():
-    print("""If you encounter any issue(s) related to the working of the program 
-or if you have any queries please don't hesitate to contact our help desk via email.
-Please send an email or contact us through github.com stating the issue or query in detail and our team will get back to you soon.
-""")
-    print()
-    print("""Contact Us: 
-email: mypersonalpass21@gmail.com")
-github: https://github.com/Soul-Breaker/My-Pass-Manager
-""")
-    print("Thank-you")
-
-
-program_initiate = new_or_login()
-
-query_or_issue = input(""" If everything went perfectly and if you are satified with our performance please enter 'y'
-OR
-If you want to raise a query or report an issue enter 'qi'
-""")
-if query_or_issue.lower().startswith('y'):
-    print("It was our pleasure serving you 😇😇😇!")
-elif query_or_issue.lower().startswith('q'):
-    queries()
-
