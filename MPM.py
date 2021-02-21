@@ -2,7 +2,7 @@ import hashlib
 import random
 from cryptography.fernet import Fernet
 import time
-# import sys
+import sys
 import smtplib
 import mysql.connector
 
@@ -28,9 +28,9 @@ Let's start then...
 regmail = ''
 intro()
 
-mysql_pass = input("Enter your mysql password :")
-db = mysql.connector.connect(host='localhost', user='root', passwd=mysql_pass)
-cursor = db.cursor()
+#mysql_pass = input("Enter your mysql password :")
+#db = mysql.connector.connect(host='localhost', user='root', passwd=mysql_pass)
+#cursor = db.cursor()
 
 
 def new_or_login():  # provides option to either CREATE AN ACCOUNT OR LOGIN TO AN EXISTING ACCOUNT
@@ -59,10 +59,11 @@ def new_user():
 
 
 pwd_hashed = ''
-
+in_pwd = ''
 
 def mast_pass():
     global pwd_hashed
+    global in_pwd
     time.sleep(5)
     print("""
 This software stores all your website addresses, website name, user name and also the main part 'THE PASSWORD'.
@@ -82,24 +83,30 @@ v) No space character
 """)
     time.sleep(3)
     in_pwd = input("Enter your MASTER-PASSWORD :")
-    pwd_hashed = hashing(
-        in_pwd)  # The master-password gets hashed and returned back to the variable (moves to line 316)
+    pwd_hashed = hashing(in_pwd)  # The master-password gets hashed and returned back to the variable (moves to line 316)
     time.sleep(2)
     print("Password saved!")  # The master-password has been saved in hash format and it cannot be decoded at all
 
 
 db_use = ''
 encrypto = ''
-
+cursor = ''
+db = ''
 
 def new_connection():
     global db_use
     global encrypto
     global regmail
+    global cursor
+    global db
     print("""What do you want to do:
 1. Create a new database and use it
 2. Use existing database
 """)
+    mysql_pass = input("Enter your mysql password :")
+    db = mysql.connector.connect(host='localhost', user='root', passwd=mysql_pass)
+    cursor = db.cursor()
+
     key = Fernet.generate_key()
     encrypto = Fernet(key)
     # Email registration
@@ -132,25 +139,32 @@ def existing_user(attempts_left):
     # Verifies the user using his master-password
     master_pwd_input = input("Enter your master-password :")
     master_pwd_check = hashing(master_pwd_input)
-    if master_pwd_check.lower().startswith('f'):  # If user has forgotten his password then an email will be sent to
+
+
+    if master_pwd_input.lower().startswith('forgot password'):
+        print("An OTP will be sent to your registered email within the next 5 mins to reset your password. Please enter the OTP carefully.")  # If user has forgotten his password then an email will be sent to
         forgot_pass()  # the registered mail id containing instructions to reset his password
 
     else:
-
-        if master_pwd_check == pwd_hashed:  # Master-password is matched and first step of verification is over
+        print(in_pwd)
+        # print(master_pwd_input)
+        # print(master_pwd_check)
+        # print(pwd_hashed)
+        if master_pwd_input == in_pwd:  # Master-password is matched and first step of verification is over
             print("""
+Master-password verified.
 An OTP will be sent to your registered email within the next 5 mins. Please enter the OTP carefully."
 If OTP is entered incorrectly then, the manager will quit and you will have to restart the password-manager.
 """)
             time.sleep(3)
-            otp_send()  # Initialisation of sending an OTP takes place(moves to line 329)
+            otp_send()    # Initialisation of sending an OTP takes place(moves to line 329)
             otp_verify()  # OTP verification takes place(moves to line 346)
-            verified()  # Second verification is also success and user has been granted access to data(moves to line 155)
+            verified()    # Second verification is also success and user has been granted access to data(moves to line 155)
 
         else:
             attempts_left -= 1
             print("Wrong password entered!!!")
-            print("You have", attempts, "attempts left!")
+            print("You have", attempts_left, "attempts left!")
             print("""
 What do you want to do :
 1. Try again
@@ -168,10 +182,9 @@ What do you want to do :
 
             else:
                 print("""An email has been sent to your registered mail id.
-                Please follow the instructions mentioned in the mail inorder to rest your password.""")
+Please follow the instructions mentioned in the mail inorder to rest your password.""")
                 forgot_pass()  # User has forgotten password and an email has been sent to registered mail
-                # with OTP which can be used to reset master-password (moves to line 382)
-
+                               # with OTP which can be used to reset master-password (moves to line 382)
 
 def verified():
     print("""
@@ -369,11 +382,11 @@ def decrypt(display_pass):
     return str(decrypted_pass, 'utf8')
 
 
-OTP = ''
+OTP1 = ''
 
 
 def otp_send():
-    global OTP
+    global OTP1
     otp = []
 
     for i in range(4):
@@ -383,7 +396,7 @@ def otp_send():
     OTP1 = ''.join(otp)  # generates a random OTP
     OTP = "Your OTP is - " + OTP1
     email = "mypersonalpass21@gmail.com"
-    remail = input("Enter your registered email :")
+    remail = input("Enter your registered email here :")
     with smtplib.SMTP("smtp.gmail.com", 587)as smtp:
         smtp.ehlo()
         smtp.starttls()
@@ -394,10 +407,9 @@ def otp_send():
 
 
 def otp_verify():
-    print(OTP)
     otp_check = input("Enter OTP {____} :")
 
-    if otp_check == OTP:
+    if otp_check == OTP1:
         print("Verified!")  # verifies the OTP sent to the mail
         return True
 
@@ -405,8 +417,7 @@ def otp_verify():
         print("Restart the program and try again!!")
         print(
             "Quiting Program...")  # if user fails in verifying the OTP then the program shuts down and has to be restarted
-        # sys.exit()
-        otp_verify()
+        sys.exit()
 
 
 def password_generator():
@@ -436,6 +447,7 @@ def password_generator():
 
 
 def forgot_pass():
+    print("Starting the process to reset your pass...")
     print()
     otp_send()
     print("An email has been sent to", regmail, " with an OTP!")  # sends a mail to reset password by verifying OTP
@@ -471,4 +483,3 @@ if query_or_issue.lower().startswith('y'):
 elif query_or_issue.lower().startswith('q'):
     print()  # enables user to raise errors, provide feedbacks and suggestions and, to contact us regarding
     queries()  # any queries.
-
