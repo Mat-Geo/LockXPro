@@ -14,10 +14,9 @@ In near future the software will be further developed with friendly UI's and muc
 
 System Requirements:
 
--Python 3.8 or later versions
+-Python 3.6 or later versions
 -MySQL 5.1 or later versions
--MySQL connector (if you haven't dowloaded it yet then: open cmd(terminal) - type->pip install mysql-connector or pip -m install mysql-connector)
-- 1MB storage
+-MySQL connector [if you haven't dowloaded it yet then: open cmd(terminal) - type->pip install mysql-connector or pip -m install mysql-connector]
 
 
 User Requirements:
