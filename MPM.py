@@ -10,8 +10,11 @@ import pickle
 attempts = 3
 cursor = ''
 db = ''
-sec_pass = ''
+#sec_pass = ''
 OTP1 = ''
+
+# Paths of execution
+# Path1 : program_initiate
 
 
 def intro():
@@ -187,7 +190,7 @@ What do you want to do :
 
                     print("You ran out of attempts!")
                     print("An email has been sent to your registered mail to reset your password.")
-                    # forgot_pass()  # User has incorrectly entered master-password and an email has been sent to
+                    forgot_pass()  # User has incorrectly entered master-password and an email has been sent to
                     # reset the password (moves to line 382)
 
             else:
@@ -209,12 +212,15 @@ What do you want to do :
 2. Retrieve existing account details
 """)
 
+    file_store = open('table.dat', 'rb')
+    table_store = pickle.load(file_store)
+    file_store.close()
     db1 = mysql.connector.connect(host='localhost', user='root', passwd=mysql_pass)
     cursor1 = db1.cursor()
     ch = input('(1/2):')
     if ch.startswith('1'):
 
-        inserting_values(table_value)  # Navigates to function to add details of new account (moves to line 296)
+        inserting_values(table_store)  # Navigates to function to add details of new account (moves to line 296)
 
     elif ch.startswith('2'):
 
@@ -270,6 +276,7 @@ How do you want to retrieve the data :
 
             print("Bye Bye...")
             print("See you soon...")  # exits the program
+            sys.exit()
 
         else:
 
@@ -308,13 +315,13 @@ def table(cur):
     print("Table ", name_table, " has been created!")
     time.sleep(2)
     cur.execute(creating_table)
-    inserting_values(table_value)  # Navigates to inserting functions next
+    inserting_values(name_table)  # Navigates to inserting functions next
     file5.close()
 
 
 def password_req():
 
-    global sec_pass
+    #global sec_pass
     print("""
 Minimum Requirements for strong password:
 i) 15 characters
@@ -383,14 +390,14 @@ Let's start from password once more...
 
             if count_upper > 0 and count_num > 1 and count_spec > 1:
 
-                sec_pass = test_pass
+                # sec_pass = test_pass
                 print("All requirements met.")
-                print("Is", sec_pass, "your final choice of password ?")
+                print("Is", test_pass, "your final choice of password ?")
 
                 if input('(y/n) :').lower().startswith('y'):  # asks user to confirm entered password
 
                     print('Password set!')  # password has been set
-                    return sec_pass
+                    return test_pass
 
                 else:
 
@@ -419,14 +426,17 @@ Let's start from password once more...
         password_req()  # restarts the process as an invalid input was given by user(moves to line 229)
 
 
-def inserting_values(tablename):
+def inserting_values(table_name):
 
+    #file_store = open('table.dat', 'rb')
+    #table_value = pickle.load(file_store)
+    #file_store.close()
     url = input("Enter the URL of the website(if you want to skip this enter 'skip') :")
     website = input("Enter the name of the website(in small letters) :")
     user_name = input("Enter the user name to be used of the account :")
     acc_pwd = password_req()  # asks user to create password for his account(moves to line 229)
     encrypted_pwd = passwd_encryption(acc_pwd)  # encrypts the password chosen by user(moves to line 323)
-    insert_values = "INSERT INTO " + tablename + " (URL, Website, UserName, Password) " + "VALUES (" + "'" + url + "'" + ", " + "'" + website + "'" + ", " + "'" + user_name + "'" + ", " + "'" + encrypted_pwd + "'" + ")"
+    insert_values = "INSERT INTO " + table_name + " (URL, Website, UserName, Password) " + "VALUES (" + "'" + url + "'" + ", " + "'" + website + "'" + ", " + "'" + user_name + "'" + ", " + "'" + encrypted_pwd + "'" + ")"
     cursor.execute(insert_values)
     db.commit()
     print("Data has been successfully added to the table!")  # data has been inserted into the table
@@ -434,11 +444,12 @@ def inserting_values(tablename):
 
 def passwd_encryption(sec_passwd):
 
-    file2 = open('key.dat', 'rb')
-    value = (pickle.load(file2)).encode()
+    f = open('key.dat', 'rb')
+    value = (pickle.load(f)).encode()
     encrypto = Fernet(value)
     encrypted_pass = encrypto.encrypt(sec_passwd.encode())
     encrypt_str_pass = str(encrypted_pass, 'utf8')  # converts the encrypted password from bytes to string
+    f.close()
     return encrypt_str_pass
 
 
@@ -508,7 +519,9 @@ def password_generator():
     alphas = lo_alphas + up_alphas
     nums = "0123456789"
     symbs = "!@#$%^&*~?+"
-    L1 = L2 = L3 = []
+    L1 = []
+    L2 = []
+    L3 = []
 
     for i in range(11):
 
@@ -548,14 +561,14 @@ or if you have any queries please don't hesitate to contact our help desk via em
 Please send an email or contact us through github.com stating the issue or query in detail and our team will get back to you soon.
 """)
 
-    time.sleep(4)
+    time.sleep(6)
     print()
 
     print("""Contact Us: 
-email: mypersonalpass21@gmail.com")
+email: mypersonalpass21@gmail.com
 github: https://github.com/Soul-Breaker/My-Pass-Manager
 """)
-    print("Thank-you 😇😊")
+    print("Thank-you")
 
 
 key = Fernet.generate_key()
@@ -563,15 +576,16 @@ key_str = str(key, 'utf8')
 file_key = open("key.dat", 'wb')
 pickle.dump(key_str, file_key)
 file_key.close()
-file_store = open('table.dat', 'rb')
-table_value = pickle.load(file_store)
-file_store.close()
+#file_store = open('table.dat', 'rb')
+#table_value = pickle.load(file_store)
+#file_store.close()
 
 program_initiate = new_or_login()
 
 query_or_issue = input("""If everything went perfectly and if you are satisfied with our performance please enter 'y'
 OR
-If you want to raise a query or report an issue enter 'qi'
+If you want to raise a query or report an issue enter 'q'
+(y/q):
 """)  # takes a feedback from the user
 time.sleep(3)
 
