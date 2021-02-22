@@ -149,21 +149,23 @@ def existing_user(attempts_left):
     hashed_pass_check = pickle.load(file1)
 
     if master_pwd_input.lower().startswith('forgot password'):
-
+        
         print("Processing your OTP...")  # If user has forgotten his password then an email will be sent to
         forgot_pass()                    # the registered mail id containing instructions to reset his password(moves to line 458)
 
     else:
 
         if master_pwd_check == hashed_pass_check:  # Master-password is matched and first step of verification is over
-
+            
+            print("Verifying...")
+            time.sleep(1)
             print("""
 Master-password verified.
 An OTP will be sent to your registered email within the next 5 mins. Please enter the OTP carefully."
 If OTP is entered incorrectly then, the manager will quit and you will have to restart the password-manager.
 """)
 
-            time.sleep(3)
+            time.sleep(2)
             otp_send()  # Initialisation of sending an OTP takes place(moves to line 329)
             otp_verify()  # OTP verification takes place(moves to line 346)
             verified()  # Second verification is also success and user has been granted access to data(moves to line 155)
@@ -578,9 +580,6 @@ key_str = str(key, 'utf8')
 file_key = open("key.dat", 'wb')
 pickle.dump(key_str, file_key)
 file_key.close()
-#file_store = open('table.dat', 'rb')
-#table_value = pickle.load(file_store)
-#file_store.close()
 
 program_initiate = new_or_login()
 
@@ -589,7 +588,7 @@ OR
 If you want to raise a query or report an issue enter 'q'
 (y/q):
 """)  # takes a feedback from the user
-time.sleep(3)
+time.sleep(2)
 
 if query_or_issue.lower().startswith('y'):
 
