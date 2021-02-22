@@ -156,17 +156,14 @@ def existing_user(attempts_left):
     else:
 
         if master_pwd_check == hashed_pass_check:  # Master-password is matched and first step of verification is over
-            
-            print("Verifying...")
-            print()
-            time.sleep(2)
+
             print("""
 Master-password verified.
 An OTP will be sent to your registered email within the next 5 mins. Please enter the OTP carefully."
 If OTP is entered incorrectly then, the manager will quit and you will have to restart the password-manager.
 """)
 
-            time.sleep(2)
+            time.sleep(3)
             otp_send()  # Initialisation of sending an OTP takes place(moves to line 329)
             otp_verify()  # OTP verification takes place(moves to line 346)
             verified()  # Second verification is also success and user has been granted access to data(moves to line 155)
@@ -450,6 +447,9 @@ def passwd_encryption(sec_passwd):
     f = open('key.dat', 'rb')
     value = (pickle.load(f)).encode()
     encrypto = Fernet(value)
+    encrypto_value = str(encrypto)
+    file_en = open("encrypt.dat",'wb')
+    pickle.dump(encrypto_value,file_en)
     encrypted_pass = encrypto.encrypt(sec_passwd.encode())
     encrypt_str_pass = str(encrypted_pass, 'utf8')  # converts the encrypted password from bytes to string
     f.close()
@@ -463,11 +463,10 @@ def hashing(pw):
 
 def decrypt(display_pass):
 
-    file3 = open('key.dat', 'rb')
-    value = pickle.load(file3)
-    encrypto = Fernet(value)
+    file3 = open('encrypt.dat', 'rb')
+    value = (pickle.load(file3)).encode()
     print(display_pass)
-    decrypted_pass = encrypto.decrypt(display_pass)  # decrypts the password of an account for the user to see
+    decrypted_pass = value.decrypt(display_pass)  # decrypts the password of an account for the user to see
     return str(decrypted_pass, 'utf8')
 
 
