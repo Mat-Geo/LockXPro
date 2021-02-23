@@ -540,7 +540,13 @@ def password_generator():
     L = L1 + L2 + L3
     random.shuffle(L)       # offers more entropy
     rand_pass = ''.join(L)  # generates a random 15 character password with a mix of both upper & lower
-    return rand_pass        # case letters, numbers and special symbols shuffled randomly
+                            # case letters, numbers and special symbols shuffled randomly
+    print('Your generated password is :',rand_pass)
+    ch = input("Do you want to continue with this password?(y/n) :")
+    if ch.lower().startswith('y'):
+        return rand_pass
+    else:
+        password_generator()
 
 
 def forgot_pass():
@@ -567,11 +573,11 @@ We are always at your service 😇!
 
     print("""Contact Us: 
 email: mypersonalpass21@gmail.com
-github: https://github.com/Soul-Breaker/My-Pass-Manager
+github: https://github.com/Soul-Breaker/My_Personal_Lock
 """)
     print("Thank-you 😊")
 
-intro()             # Prints introduction text.(moves to line 24)
+intro()                             # Prints introduction text.(moves to line 24)
 key = Fernet.generate_key()
 file_key = open("key.txt", 'wb')
 pickle.dump(key,file_key)
@@ -583,7 +589,7 @@ query_or_issue = input("""If everything went perfectly and if you are satisfied 
 OR
 If you want to raise a query or report an issue enter 'q'
 (y/q):
-""")                                                    # takes a feedback from the user
+""")                                  # takes a feedback from the user
 time.sleep(2)
 
 if query_or_issue.lower().startswith('y'):
@@ -594,4 +600,3 @@ elif query_or_issue.lower().startswith('q'):
 
     print()    # enables user to raise errors, provide feedbacks and suggestions and, to contact us regarding
     queries()  # any queries.
-
