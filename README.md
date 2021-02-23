@@ -20,8 +20,10 @@ System Requirements:
 
 -Python 3.6 or later versions
 -MySQL 5.1 or later versions
--MySQL connector [if you haven't dowloaded it yet then: open cmd(terminal) - type->pip install mysql-connector or pip -m install mysql-connector]
-
+-MySQL connector [if you haven't dowloaded it yet then: open cmd(terminal) -> (type) pip install mysql-connector or pip -m install mysql-connector]
+-cryptography module
+-hashlib module
+Note: You download the above mentioned modules following the same syntax used for installing MySQL connector. And make sure that your Python IDLE, MySQL connector and the modules are all in the same folder. So, while installing the modules and connector change the path to the folder with Python file.
 
 User Requirements:
 
