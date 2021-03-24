@@ -43,22 +43,22 @@ Enter choice
 """)
     ch = input("(1/2):")
     if ch.startswith('1'):
-        new_user()               # Navigates to Creating an account for new user ( moves to line 49)
+        new_user()               # Navigates to Creating an account for new user
     elif ch.startswith('2'):
-        existing_user(attempts)  # Navigates to verification of existing user (moves to line 125)
+        existing_user(attempts)  # Navigates to verification of existing user 
     else:
         print("Invalid input!")
         print("Restarting the process...")
         time.sleep(5)
-        new_or_login()           # Restarts this process as an invalid input was provided (moves to line 30)
+        new_or_login()           # Restarts this process as an invalid input was provided
 
 
 def new_user():
 
     mast_pass()                  # Asks user to set his personal master-password which will act as his private key and
-                                 # enable him to gain access to the Manager (moves to line 56)
+                                 # enable him to gain access to the Manager 
     new_connection()             # Next, the software creates a database and table to the hold the details of
-                                 # various accounts of the user (moves to line 86)
+                                 # various accounts of the user 
 
 
 def mast_pass():
@@ -85,7 +85,7 @@ v) No space character
     print("Note that any master-password entered will be taken even if it is just 1 character.If you want to be safe, follow the requirements")
     time.sleep(1)
     in_pwd = input("Enter your MASTER-PASSWORD :")
-    pwd_hashed = hashing(in_pwd)  # The master-password gets hashed and returned back to the variable (moves to line 457)
+    pwd_hashed = hashing(in_pwd)  # The master-password gets hashed and returned back to the variable 
     print("Processing...")
     time.sleep(2)
     print("Password saved!")      # The master-password has been saved in hash format and it cannot be decoded by any software unless its too predictable like '1234'
@@ -114,15 +114,15 @@ def new_connection():
 
     if input("(1/2):").startswith('1'):
 
-        db_name = input("Enter the name of the new database :")  # Asks the user to create a new database
+        db_name = input("Enter the name of the new database :")   # Asks the user to create a new database
         create_db = "create database " + db_name
         db_use = "use " + db_name
         file4 = open('database.dat', 'wb')
         pickle.dump(db_use, file4)
         cursor.execute(create_db)
         cursor.execute(db_use)
-        print("Database changed.")                               # The database is changed from default to the database given by the user
-        table(cursor)                                            # Navigates to configuration of table in the chosen database (moves to line 309)
+        print("Database changed.")                                 # The database is changed from default to the database given by the user
+        table(cursor)                                              # Navigates to configuration of table in the chosen database 
 
     else:
 
@@ -131,13 +131,13 @@ def new_connection():
         for x in cursor:
             print(x)
 
-        db_name = input("Enter the database you want to use :")  # Enables user to make use of already existing database
+        db_name = input("Enter the database you want to use :")    # Enables user to make use of already existing database
         db_use = 'use ' + db_name
         file4 = open('database.dat', 'wb')
         pickle.dump(db_use, file4)
         cursor.execute(db_use)
-        print('Database changed.')                                # Database changed from default to that chosen by user
-        table(cursor)                                             # Navigates to config of table existing in the chosen database (moves to line 309)
+        print('Database changed.')                                  # Database changed from default to that chosen by user
+        table(cursor)                                               # Navigates to config of table existing in the chosen database
 
     file_mail.close()
 
@@ -154,7 +154,7 @@ def existing_user(attempts_left):
 
         print("Processing your OTP...")                          # If user has forgotten his password then an email will be sent to
         forgot_pass()                                            # the registered mail id containing instructions to reset
-                                                                 # his password(moves to line 548)
+                                                                 # his password
 
     else:
 
@@ -167,10 +167,10 @@ If OTP is entered incorrectly then, the manager will quit and you will have to r
 """)
 
             time.sleep(1)
-            otp_send()                                             # Initialisation of sending an OTP takes place(moves to line 475)
-            otp_verify()                                           # OTP verification takes place(moves to line 501)
+            otp_send()                                             # Initialisation of sending an OTP takes place
+            otp_verify()                                           # OTP verification takes place
             verified()                                             # Second verification is also success and user has been granted access
-                                                                   # to data(moves to line 210)
+                                                                   # to data
 
         else:
 
@@ -188,21 +188,21 @@ What do you want to do :
                 if attempts_left > 0:
 
                     time.sleep(2)
-                    existing_user(attempts_left)                    # Reinitialize the verification process(moves to line 145)
+                    existing_user(attempts_left)                    # Reinitialize the verification process
 
                 else:
 
                     print("You ran out of attempts!")
                     print("An email has been sent to your registered mail to reset your password.")
                     forgot_pass()                                   # User has incorrectly entered master-password and an email
-                                                                    # has been sent to reset the password (moves to line 546)
+                                                                    # has been sent to reset the password
 
             else:
 
                 print("""An email has been sent to your registered mail id.
                 Please follow the instructions mentioned in the mail inorder to rest your password.""")
                 forgot_pass()                                       # User has forgotten password and an email has been sent to registered mail
-                                                                    # with OTP which can be used to reset master-password (moves to line 546)
+                                                                    # with OTP which can be used to reset master-password 
 
     file1.close()
 
@@ -224,7 +224,7 @@ What do you want to do :
     ch = input('(1/2):')
     if ch.startswith('1'):
 
-        inserting_values(table_store)                               # Navigates to function to add details of new account (moves to line 426)
+        inserting_values(table_store)                               # Navigates to function to add details of new account
 
     elif ch.startswith('2'):
 
@@ -241,7 +241,7 @@ How do you want to retrieve the data :
 
         if action.startswith('1'):
 
-            url_in = input("Enter the URL :")  # Fetches the data corresponding to URL entered by user
+            url_in = input("Enter the URL :")               # Fetches the data corresponding to URL entered by user
             cursor1.execute(db_use)
             display = "select * from " + table_store + " WHERE URL=" + "'" + url_in + "'"
             cursor1.execute(display)
@@ -253,12 +253,12 @@ How do you want to retrieve the data :
                 print('UserName ----> ', x[2])
                 deco_pwd = x[3].encode()
                 password = decrypt(deco_pwd)
-                print('Password ----> ', password)  # Prints the fetched data along with the decrypted password
+                print('Password ----> ', password)          # Prints the fetched data along with the decrypted password
 
         elif action.startswith('2'):
 
             web_name = input("Enter the website name(in small letters) :")  # Searches and retrieves the data
-            cursor1.execute(db_use)  # corresponding to the website name
+            cursor1.execute(db_use)                                         # corresponding to the website name
             display = "select * from " + table_store + " WHERE Website=" + "'" + web_name + "'"
             cursor1.execute(display)
 
@@ -269,37 +269,37 @@ How do you want to retrieve the data :
                 print('UserName ----> ', y[2])
                 dec_pwd = y[3].encode()
                 password = decrypt(dec_pwd)
-                print('Password ----> ', password)  # Prints the retrieved data along with the decrypted password
+                print('Password ----> ', password)          # Prints the retrieved data along with the decrypted password
 
         elif action.startswith('3'):
 
             print("Bye Bye...")
             print("See you soon...")
-            sys.exit()          # exits the program abruptly
+            sys.exit()                                       # exits the program abruptly
 
         else:
 
             print("Wrong choice!")
             print("Lets try this again...")
             print()
-            verified()  # Restarts the process as a wrong choice other than (1/2/3) was entered(moves to line 210)
+            verified()                                                     # Restarts the process as a wrong choice other than (1/2/3) was entered
 
-        ch = input("Do you want to look up info for another site?(y/n):")  # Provides an option to look up data of another
+        ch = input("Do you want to look up info for another site?(y/n):")  # Provides an option to look up data of another account as well
 
-        if ch.lower().startswith('y'):  # account as well
+        if ch.lower().startswith('y'):                                      
 
-            verified()  # initiates the same process to provide data of another account(moves to line 157)
+            verified()                                                     # initiates the same process to provide data of another account
 
         elif ch.lower().startswith('n'):
 
-            print("Thank-you")  # exits the program
+            print("Thank-you")                                             # exits the program
             print("See you next time!")
 
         else:
 
             print("Invalid choice!")
             print("Try again...")
-            verified()  # restarts the process as an invalid input was provided by the user (moves to line 157)
+            verified()                                                      # restarts the process as an invalid input was provided by the user 
 
         file1.close()
         file_store.close()
@@ -308,13 +308,13 @@ How do you want to retrieve the data :
 def table(cur):
 
     file5 = open('table.dat', 'wb')
-    name_table = input("Enter a name for the table :")  # creates a table defined by user
+    name_table = input("Enter a name for the table :")                      # creates a table defined by user
     pickle.dump(name_table, file5)
     creating_table = "create table " + name_table + " (URL varchar(104),Website varchar(32),UserName varchar(50),Password varchar(203) )"
     print("Table ", name_table, " has been created!")
     time.sleep(1)
     cur.execute(creating_table)
-    inserting_values(name_table)  # Navigates to inserting functions next
+    inserting_values(name_table)                                            # Navigates to inserting functions next
     file5.close()
 
 
@@ -340,8 +340,8 @@ v) Space not accepted as a character
 
     if pass_choice.startswith('1'):
 
-        test_pass = input("Enter the password you want to use :")  # takes a password entered by user and verifies if
-        pass_len = len(test_pass)  # satisfies all requirements to ensure safety
+        test_pass = input("Enter the password you want to use :")    # takes a password entered by user and verifies if satisfies all requirements to ensure safety
+        pass_len = len(test_pass)  
         count_char = count_num = count_spec = count_upper = 0
 
         for i in test_pass:
@@ -364,7 +364,7 @@ v) Space not accepted as a character
                 print("Let's start from password once more...")
                 time.sleep(2)
                 print()
-                return 'False',test_pass     # restarts the process as the password included space character(moves to line 229)
+                return 'False',test_pass     # restarts the process as the password included space character
 
             else:
 
@@ -382,7 +382,7 @@ Let's start from password once more...
 
             time.sleep(2)
             print()
-            return 'False',test_pass          # re-initiates the process as the password length requirement was not met(moves to line 229)
+            return 'False',test_pass          # re-initiates the process as the password length requirement was not met
 
         else:
 
@@ -400,23 +400,22 @@ Let's start from password once more...
 
                     print("Let's start from password once more...")
                     time.sleep(2)
-                    return 'False',test_pass # restarts process as user was not satisfied with the password entered and wanted
-                                    # to re-enter the password(moves to line 229)
+                    return 'False',test_pass # restarts process as user was not satisfied with the password entered and wanted to re-enter the password
 
             else:
 
                 print("Insufficient number of upper case letter or numbers or special characters. ")
                 print("Restarting password setting ...")
                 time.sleep(4)
-                return 'False',test_pass # restarts the process few requirements were not fulfilled(moves to line 229)
+                return 'False',test_pass # restarts the process few requirements were not fulfilled
 
     elif pass_choice.startswith('2'):
 
-        sec_pwd = password_generator()      # automatically generates a password(moves to line 372)
+        sec_pwd = password_generator()      # automatically generates a password
         while True:
             print('Your generated password is :', sec_pwd)
             ch = input("Do you want to continue with this password?(y/n) :")
-            if ch.lower().startswith('n'):      # generates another password(moves to line 372)
+            if ch.lower().startswith('n'):      # generates another password
                 sec_pwd = password_generator()
             else:
                 break
@@ -427,7 +426,7 @@ Let's start from password once more...
         print("Invalid input!")
         print("Restarting password setting in 3 secs...")
         time.sleep(3)
-        return 'False',None             # restarts the process as an invalid input was given by user(moves to line 229)
+        return 'False',None             # restarts the process as an invalid input was given by user
 
 
 def inserting_values(table_name):
@@ -435,7 +434,7 @@ def inserting_values(table_name):
     url = input("Enter the URL of the website :")
     website = input("Enter the name of the website(in small letters) :")
     user_name = input("Enter the user name to be used of the account :")
-    accept,acc_pwd = password_req()     # asks user to create password for his account(moves to line 321)
+    accept,acc_pwd = password_req()     # asks user to create password for his account
     
     while True:
         if accept == 'False':
@@ -443,7 +442,7 @@ def inserting_values(table_name):
         else:
             break
         
-    encrypted_pwd = passwd_encryption(acc_pwd)  # encrypts the password chosen by user(moves to line 444)
+    encrypted_pwd = passwd_encryption(acc_pwd)              # encrypts the password chosen by user
     insert_values = "INSERT INTO " + table_name + " (URL, Website, UserName, Password) " + "VALUES (" + "'" + url + "'" + ", " + "'" + website + "'" + ", " + "'" + user_name + "'" + ", " + "'" + encrypted_pwd + "'" + ")"
     cursor.execute(insert_values)
     db.commit()
@@ -588,7 +587,7 @@ We are always at your service 😇!
         smtp.starttls()
         smtp.ehlo()
         smtp.login(email, "guaywvugbzbhkcew")
-        smtp.sendmail(email,email,issue)
+        smtp.sendmail(email,email,issue)            # a mail is sent to the official mail-id of MyPassLock reporting an issue faced by the user
     print()
 
     print("""Contact Us: 
@@ -597,7 +596,7 @@ github: https://github.com/Soul-Breaker/My_Personal_Lock
 """)
     print("Thank-you 😊")
 
-intro()                             # Prints introduction text.(moves to line 24)
+intro()                             # Prints introduction text
 key = Fernet.generate_key()
 file_key = open("key.dat", 'wb')
 pickle.dump(key,file_key)
