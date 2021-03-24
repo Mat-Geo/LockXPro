@@ -310,7 +310,7 @@ def table(cur):
     file5 = open('table.dat', 'wb')
     name_table = input("Enter a name for the table :")  # creates a table defined by user
     pickle.dump(name_table, file5)
-    creating_table = "create table " + name_table + " (URL varchar(104),Website varchar(32),UserName varchar(14),Password varchar(203) )"
+    creating_table = "create table " + name_table + " (URL varchar(104),Website varchar(32),UserName varchar(50),Password varchar(203) )"
     print("Table ", name_table, " has been created!")
     time.sleep(1)
     cur.execute(creating_table)
@@ -364,7 +364,7 @@ v) Space not accepted as a character
                 print("Let's start from password once more...")
                 time.sleep(2)
                 print()
-                password_req()  # restarts the process as the password included space character(moves to line 229)
+                return 'False',test_pass     # restarts the process as the password included space character(moves to line 229)
 
             else:
 
@@ -382,7 +382,7 @@ Let's start from password once more...
 
             time.sleep(2)
             print()
-            password_req()  # re-initiates the process as the password length requirement was not met(moves to line 229)
+            return 'False',test_pass          # re-initiates the process as the password length requirement was not met(moves to line 229)
 
         else:
 
@@ -393,14 +393,14 @@ Let's start from password once more...
 
                 if input('(y/n) :').lower().startswith('y'):  # asks user to confirm entered password
 
-                    print('Password set!')  # password has been set
-                    return test_pass
+                    print('Password set!')                    # password has been set
+                    return 'True',test_pass
 
                 else:
 
                     print("Let's start from password once more...")
                     time.sleep(2)
-                    password_req()  # restarts process as user was not satisfied with the password entered and wanted
+                    return 'False',test_pass # restarts process as user was not satisfied with the password entered and wanted
                                     # to re-enter the password(moves to line 229)
 
             else:
@@ -408,27 +408,41 @@ Let's start from password once more...
                 print("Insufficient number of upper case letter or numbers or special characters. ")
                 print("Restarting password setting ...")
                 time.sleep(4)
-                password_req()  # restarts the process few requirements were not fulfilled(moves to line 229)
+                return 'False',test_pass # restarts the process few requirements were not fulfilled(moves to line 229)
 
     elif pass_choice.startswith('2'):
 
-        sec_pwd = password_generator()  # automatically generates a password(moves to line 372)
-        return sec_pwd
+        sec_pwd = password_generator()      # automatically generates a password(moves to line 372)
+        while True:
+            print('Your generated password is :', sec_pwd)
+            ch = input("Do you want to continue with this password?(y/n) :")
+            if ch.lower().startswith('n'):      # generates another password(moves to line 372)
+                sec_pwd = password_generator()
+            else:
+                break
+        return 'True',sec_pwd
 
     else:
 
         print("Invalid input!")
         print("Restarting password setting in 3 secs...")
         time.sleep(3)
-        password_req()  # restarts the process as an invalid input was given by user(moves to line 229)
+        return 'False',None             # restarts the process as an invalid input was given by user(moves to line 229)
 
 
 def inserting_values(table_name):
 
-    url = input("Enter the URL of the website(if you want to skip this enter 'skip') :")
+    url = input("Enter the URL of the website :")
     website = input("Enter the name of the website(in small letters) :")
     user_name = input("Enter the user name to be used of the account :")
-    acc_pwd = password_req()  # asks user to create password for his account(moves to line 321)
+    accept,acc_pwd = password_req()     # asks user to create password for his account(moves to line 321)
+    
+    while True:
+        if accept == 'False':
+            accept,acc_pwd = password_req()
+        else:
+            break
+        
     encrypted_pwd = passwd_encryption(acc_pwd)  # encrypts the password chosen by user(moves to line 444)
     insert_values = "INSERT INTO " + table_name + " (URL, Website, UserName, Password) " + "VALUES (" + "'" + url + "'" + ", " + "'" + website + "'" + ", " + "'" + user_name + "'" + ", " + "'" + encrypted_pwd + "'" + ")"
     cursor.execute(insert_values)
@@ -436,7 +450,7 @@ def inserting_values(table_name):
     print("Data has been successfully added to the table!")  # data has been inserted into the table
     ch = input("Do you want to continue adding more accounts?(y/n):")
     if ch.lower().startswith('y'):
-        insert_values(table_name)
+        inserting_values(table_name)
     else:
         print()
 
@@ -461,9 +475,9 @@ def decrypt(display_pass):
 
     file_dec = open('key.dat', 'rb')
     value = pickle.load(file_dec)
-    en = Fernet(value)
+    enc = Fernet(value)
 
-    decrypted_pass = en.decrypt(display_pass)  # decrypts the password of an account for the user to see
+    decrypted_pass = enc.decrypt(display_pass)  # decrypts the password of an account for the user to see
     file_dec.close()
     return str(decrypted_pass, 'utf8')
 
@@ -490,7 +504,7 @@ def otp_send():
         smtp.ehlo()
         smtp.starttls()
         smtp.ehlo()
-        smtp.login(email, "uwtbywvqjghwrodf")
+        smtp.login(email, "guaywvugbzbhkcew")
         smtp.sendmail(email, mailid, OTP)
 
 
@@ -541,12 +555,7 @@ def password_generator():
     random.shuffle(L)       # offers more entropy
     rand_pass = ''.join(L)  # generates a random 15 character password with a mix of both upper & lower
                             # case letters, numbers and special symbols shuffled randomly
-    print('Your generated password is :',rand_pass)
-    ch = input("Do you want to continue with this password?(y/n) :")
-    if ch.lower().startswith('y'):
-        return rand_pass
-    else:
-        password_generator()
+    return rand_pass
 
 
 def forgot_pass():
@@ -569,6 +578,17 @@ We are always at your service 😇!
 """)
 
     time.sleep(3)
+    email = "mypersonalpass21@gmail.com"
+    file = open('mymail.dat', 'rb')
+    mailid = pickle.load(file)
+    issue = "User with mail-id "+ mailid + "has encountered an issue and has raised a query!"
+
+    with smtplib.SMTP("smtp.gmail.com", 587)as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
+        smtp.login(email, "guaywvugbzbhkcew")
+        smtp.sendmail(email,email,issue)
     print()
 
     print("""Contact Us: 
@@ -579,7 +599,7 @@ github: https://github.com/Soul-Breaker/My_Personal_Lock
 
 intro()                             # Prints introduction text.(moves to line 24)
 key = Fernet.generate_key()
-file_key = open("key.txt", 'wb')
+file_key = open("key.dat", 'wb')
 pickle.dump(key,file_key)
 file_key.close()
 
