@@ -1,6 +1,6 @@
-About MPL 🙋‍♂️🙋‍♀️ :
+About LXP 🙋‍♂️🙋‍♀️ :
 
-Welcome to MyPassLock 😇 
+Welcome to LockXPro 😇 
 
 MPL stores details of your various accounts like URL's, website name, user name and also the main part 'THE PASSWORD'.
 Inorder to ensure maximum security, the password manager will be secured by a master-password exclusively known only to the user 
