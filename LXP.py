@@ -24,7 +24,7 @@ OTP1 = ''
 
 def intro():
     print("""Hello User!
-Welcome to Password Manager (●'◡'●)
+Welcome to LockXPro(●'◡'●)
 Can't remember long passwords?
 Want a place to store them?
 Then we are here to help you in the safest way possible (⌐■_■)
@@ -64,9 +64,9 @@ def mast_pass():
     time.sleep(1)
     print("""
 This software stores all your website addresses, website name, user name and also the main part 'THE PASSWORD'.
-Inorder to ensure maximum security, the password manager will be secured by a master-password exclusively known only to 
+In order to ensure maximum security, the password manager will be secured by a master-password exclusively known only to 
 the user and set according to the user input. The master-password should not be something predictable and it should be 
-remembered by you at all times inorder to gain access to the manager. If the master-password is forgotten then you will
+remembered by you at all times in order to gain access to the manager. If the master-password is forgotten then you will
 receive an email in your registered gmail id containing an OTP through which can be used to reset your master-password.
 """)
 
@@ -555,7 +555,7 @@ def forgot_pass():
 
 def queries():
     print("""If you encounter any issue(s) related to the working of the program 
-or if you have any queries please don't hesitate to contact our help desk via email.
+or if you have any queries don't hesitate to contact our help desk via email.
 Please send an email or contact us through github.com stating the issue or query in detail and our team will get back to you soon.
 We are always at your service 😇!
 """)
@@ -572,7 +572,7 @@ We are always at your service 😇!
         smtp.ehlo()
         smtp.login(email, "guaywvugbzbhkcew")
         smtp.sendmail(email, email,
-                      issue)  # a mail is sent to the official mail-id of MyPassLock reporting an issue faced by the user
+                      issue)  # a mail is sent to the official mail-id of LockXpro reporting an issue faced by the user
     print()
 
     print("""Contact Us: 
@@ -588,7 +588,7 @@ file_key = open("key.dat", 'wb')
 pickle.dump(key, file_key)
 file_key.close()
 
-program_initiate = new_or_login()
+program_initiate = new_or_login()          # this does not return any value but is added for to show the place of intiation of the program :)
 
 query_or_issue = input("""If everything went perfectly and if you are satisfied with our performance please enter 'y'
 OR
