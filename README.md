@@ -2,7 +2,7 @@ About LXP 🙋‍♂️🙋‍♀️ :
 
 Welcome to LockXPro 😇 
 
-LXP stores details of your various accounts like URL's, website name, user name and also the main part 'THE PASSWORD'.
+LXP stores details of your various accounts like URL's, website name, user name and also the main part 'PASSWORD'.
 Inorder to ensure maximum security, the password manager will be secured by a master-password exclusively known only to the user 
 and set according to the user input. The user be given access to the manager using this password and also an OTP sent to the registered
 mail id given by the user while creating an account for the first time. The master-password should not be something predictable and it 
